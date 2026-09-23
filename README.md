@@ -42,6 +42,50 @@
 * **Recharts** — Data visualization
 * **lucide-react** — Icons
 
+## 🗄️ How MongoDB Is Used
+
+InsightEDU relies on MongoDB not just as a data store, but as the **analytics engine** for the entire platform. Instead of pulling raw data and crunching numbers on the client or in application code, all analytics are computed directly inside MongoDB using its **Aggregation Framework**.
+
+### 📦 Data Layer
+
+- MongoDB stores four core collections — **Students**, **Subjects**, **Marks**, and **Users** — accessed through **Mongoose** as the ODM (Object Data Modeling) layer.
+- Locally, it runs via **Docker**; in production, it's hosted on **MongoDB Atlas**.
+
+### ⚡ Analytics via Aggregation Pipelines
+
+Each analytics feature maps to a specific set of MongoDB pipeline stages:
+
+| Feature | Pipeline Stages Used |
+| --- | --- |
+| Dashboard KPIs | `$count`, `$avg`, `$max`, `$min`, `$cond` |
+| Student Rankings | `$group`, `$avg`, `$sort`, `$limit` |
+| Subject Performance | `$group`, `$avg`, `$lookup` |
+| Weak Student Detection | `$match`, `$group` |
+| Grade Distribution | `$bucket` |
+| Department Performance | `$lookup`, `$group` |
+| Subject Failure Analysis | `$group`, `$sort` |
+| Pass Percentage | `$group`, `$cond` |
+
+### 🚀 Why This Approach
+
+Doing the heavy lifting inside MongoDB — rather than fetching all records and calculating in JavaScript — pushes computation down to the database layer, which is far more efficient for aggregations over large datasets. The seed script alone generates 100 students and 1,000 marks records to demonstrate this at scale.
+
+### 📍 Where It Lives in the Codebase
+
+All aggregation logic is centralized in:
+
+\`\`\`text
+src/services/analyticsService.ts
+\`\`\`
+
+...and exposed to the frontend through:
+
+\`\`\`text
+/api/analytics/*
+\`\`\`
+
+...which feed the `/dashboard` and `/analytics` pages.
+
 ### ⚙️ Backend
 
 ![Next.js](https://img.shields.io/badge/Next.js%20Route%20Handlers-000000?style=for-the-badge\&logo=next.js\&logoColor=white)
