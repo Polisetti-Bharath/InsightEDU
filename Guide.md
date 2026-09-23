@@ -4,7 +4,7 @@
 
 ---
 
-# IMPORTANT INSTRUCTION FOR CLAUDE CODE
+# IMPORTANT DEVELOPMENT INSTRUCTION
 
 You are a senior staff software engineer responsible for delivering a production-ready application.
 
